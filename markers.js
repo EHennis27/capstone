@@ -1,7 +1,7 @@
 var locations = [];
 var markers = [];
 var datas = [];
-var userId = 96024 //58367 ; 
+var userId = 58367; // 96024 
 var arrayLoc = 0;
 
 // Used to place the markers currently in the JSON bin though only works for Sean Flavell's so far since the JSON bin isn't the final one.
@@ -15,7 +15,6 @@ async function placeJSONMarkers() {
 		  // finds the location of the user in the array by using the id
 		  for(arrayLoc = 0; arrayLoc < datas.length; arrayLoc++)
 		  {
-				console.log(arrayLoc <= length);
 				if(datas[arrayLoc].ID == userId)
 				{
 					found = true;
@@ -105,9 +104,10 @@ async function clickMarker()
 	  infowindow.open(map, marker);
 	});
 
-	datas[arrayLoc].markers.push(marker);
-
-	putJSONData(tempArray)
+	datas[arrayLoc].markers.push(tempArray);
+	console.log("hello");
+	console.log(datas);
+	putJSONData(datas)
 		.then(() => {console.log("Sent updated user data to jsonbin:", updatedUser);}).catch(error => {
 		console.error("Error updating jsonbin.io:", error.message);
 		document.getElementById('response').innerHTML = 'Error: ' + error.message;});
