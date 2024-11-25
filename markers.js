@@ -35,13 +35,13 @@ async function placeJSONMarkers() {
 					title: data.title
 				});
 				console.log(data.title);
-				let content = '<div class="info-window-content">' +
-	  '<div><strong><h1>' + data.title + '</h1></strong></div><br>' +
-							  '<img class="info-window-image" src="' + data.image + '" alt="' + data.title + '">' +
+				let content = `<div class="info-window-content">
+	  <div><strong><h1>` + data.title + `</h1></strong></div><br>
+							  <img class="info-window-image" src="` + data.image + `" alt="` + data.title + `">
 							  
-							  '<div>' + data.about + '</div>' +
-							  '<br><button onclick="deleteMarker(' + data.title + ')">Delete Marker</button>' +
-							  '</div>';
+							  <div>` + data.about + `</div>'
+							  <br><button onclick="deleteMarker('` + data.title + `')">Delete Marker</button>
+							  </div>`;
 	
 				var infowindow = new google.maps.InfoWindow({
 					content: content
@@ -60,12 +60,13 @@ async function clickMarker()
 {
 	// When the user clicks on the map it puts the lat/lng into the location text entry in the side box.
 	var listener = google.maps.event.addListener(map, 'click', function (event) {
+	const changelocation = document.querySelector("#location");
 	var clickedLocation = event.latLng;
 	var latLnglocation = clickedLocation.lat() + ', ' + clickedLocation.lng();
 	
 	// Google puts parentheses so I have this to remove them.
 	const finLocation = latLnglocation.substring(0, latLnglocation.length-1);
-	document.getElementById('location').value = finLocation;
+	document.getElementById('location').textContent = finLocation;
 	});
 }
 
@@ -105,7 +106,7 @@ async function clickMarker()
 	});
 
 	datas[arrayLoc].markers.push(tempArray);
-	console.log("hello");
+	console.log("hey");
 	console.log(datas);
 	putJSONData(datas)
 		.then(() => {console.log("Sent updated user data to jsonbin:", updatedUser);}).catch(error => {
@@ -120,7 +121,7 @@ async function addLocation() {
 	//var clickedLocation = event.latLng;
 	//const location = clickedLocation.lat() + ', ' + clickedLocation.lng()
     const title = document.getElementById('title').value;
-    const location = document.getElementById('location').value;
+    const location = document.getElementById('location').textContent;
     const image = document.getElementById('imageText').value;
     const about = document.getElementById('about').value;
 
@@ -171,12 +172,27 @@ async function addLocation() {
 
 		if (markerIndex > -1) {
 			// Remove the marker from the map
-			markers[markerIndex].marker.setMap(null);
+			markers[markerIndex].setMap(null);
 			// Remove the marker from the markersData array
 			markers.splice(markerIndex, 1);
+			datas[arrayLoc].markers.splice(markerIndex, 1);
 			alert('Marker deleted successfully!');
 			alertCurrentMarkers(); // Alert the current JSON array after deleting a marker
 		}
+	}
+
+	// Function to display the current markers data in an alert
+	async function alertCurrentMarkers() {
+		console.log(datas);
+		const markersJSON = datas[arrayLoc].markers.map(data => ({
+			title: data.title,
+			coordinates: data.location
+		}));
+		putJSONData(datas)
+		.then(() => {console.log("Sent updated user data to jsonbin:", updatedUser);}).catch(error => {
+		console.error("Error updating jsonbin.io:", error.message);
+		document.getElementById('response').innerHTML = 'Error: ' + error.message;});
+		alert('Current Markers Data:\n' + JSON.stringify(markersJSON, null, 2));
 	}
 
 	async function uploadImage() {
