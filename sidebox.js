@@ -4,7 +4,7 @@ function createBox() {
 	// This is the code for the side box panel
 	var boxContents = `<div id="side-panel"> <div id="add-site-text">ADD LOCATION</div> <form id="location-form"> 
 	<label for="title">Title:</label> <input type="text" id="title" name="title" required> 
-	<br> <label for="location">Location (Lat, Lng):</label> <input type="text" id="location" name="location" value="" placeholder="e.g., 39.9666, -75.5908" required> 
+	<br> <label for="location">Location (Lat, Lng):</label> <p id="location">e.g., 39.9666, -75.5908</p> 
 	<br> <label for="images">Upload Image:</label> <button onclick="uploadImage()" type="button">Upload Image</button> 
 	<br> <input type="file" id="imageInput" accept="image/*">
 	<br> <div id="imageResult" style="margin-top: 20px;"></div> 
