@@ -1,10 +1,10 @@
 var locations = [];
 var markers = [];
 var datas = [];
-var userId = 58367; // 96024 
 var arrayLoc = 0;
 
 // Used to place the markers currently in the JSON bin though only works for Sean Flavell's so far since the JSON bin isn't the final one.
+
 async function placeJSONMarkers() {
 	
 	jsonDataString = await getJSONData();
@@ -40,7 +40,7 @@ async function placeJSONMarkers() {
 							  <img class="info-window-image" src="` + data.image + `" alt="` + data.title + `">
 							  
 							  <div>` + data.about + `</div>'
-							  <br><button onclick="deleteMarker('` + data.title + `')">Delete Marker</button>
+							  <br><button onclick="deleteMarker('` + data.title + `')">Delete Marker</button> +
 							  </div>`;
 	
 				var infowindow = new google.maps.InfoWindow({
@@ -60,13 +60,12 @@ async function clickMarker()
 {
 	// When the user clicks on the map it puts the lat/lng into the location text entry in the side box.
 	var listener = google.maps.event.addListener(map, 'click', function (event) {
-	const changelocation = document.querySelector("#location");
 	var clickedLocation = event.latLng;
 	var latLnglocation = clickedLocation.lat() + ', ' + clickedLocation.lng();
 	
 	// Google puts parentheses so I have this to remove them.
 	const finLocation = latLnglocation.substring(0, latLnglocation.length-1);
-	document.getElementById('location').textContent = finLocation;
+	document.getElementById('location').value = finLocation;
 	});
 }
 
@@ -121,7 +120,7 @@ async function addLocation() {
 	//var clickedLocation = event.latLng;
 	//const location = clickedLocation.lat() + ', ' + clickedLocation.lng()
     const title = document.getElementById('title').value;
-    const location = document.getElementById('location').textContent;
+    const location = document.getElementById('location').value;
     const image = document.getElementById('imageText').value;
     const about = document.getElementById('about').value;
 
@@ -175,7 +174,6 @@ async function addLocation() {
 			markers[markerIndex].setMap(null);
 			// Remove the marker from the markersData array
 			markers.splice(markerIndex, 1);
-			datas[arrayLoc].markers.splice(markerIndex, 1);
 			alert('Marker deleted successfully!');
 			alertCurrentMarkers(); // Alert the current JSON array after deleting a marker
 		}
@@ -183,15 +181,10 @@ async function addLocation() {
 
 	// Function to display the current markers data in an alert
 	async function alertCurrentMarkers() {
-		console.log(datas);
-		const markersJSON = datas[arrayLoc].markers.map(data => ({
-			title: data.title,
-			coordinates: data.location
+		const markersJSON = markers.map(markers => ({
+			order: markers.order,
+			coordinates: markers.coordinates
 		}));
-		putJSONData(datas)
-		.then(() => {console.log("Sent updated user data to jsonbin:", updatedUser);}).catch(error => {
-		console.error("Error updating jsonbin.io:", error.message);
-		document.getElementById('response').innerHTML = 'Error: ' + error.message;});
 		alert('Current Markers Data:\n' + JSON.stringify(markersJSON, null, 2));
 	}
 
